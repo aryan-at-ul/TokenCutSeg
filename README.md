@@ -14,8 +14,8 @@ Dowload base vqgan (codebook size: 1024) [Download](https://drive.google.com/fil
 | **Dataset** | **mIoU** | **DSC** | **Checkpoint**               |
 |:-----------:|:-------:|:-------:|:----------------------------:|
 | **ISIC16**  | **86.18** | **93.30** | [Download](https://drive.google.com/file/d/1WJZynHSSCl8yCh9Vf3-dogPHfixZ5Wa1/view?usp=drive_link)       |
-| **ISIC17**  | **81.37** | **90.71** | [Download]([URL_ISIC17](https://drive.google.com/file/d/1lb7oPumyzE9mmrg6YApeJ-dTXU0vMK67/view?usp=drive_link))       |
-| **ISIC18**  | **82.76** | **90.39** | [Download]([URL_ISIC18](https://drive.google.com/file/d/1WJZynHSSCl8yCh9Vf3-dogPHfixZ5Wa1/view?usp=drive_link))       |
+| **ISIC17**  | **81.37** | **90.71** | [Download](https://drive.google.com/file/d/1lb7oPumyzE9mmrg6YApeJ-dTXU0vMK67/view?usp=drive_link)      |
+| **ISIC18**  | **82.76** | **90.39** | [Download](https://drive.google.com/file/d/1WJZynHSSCl8yCh9Vf3-dogPHfixZ5Wa1/view?usp=drive_link)     |
 | **16 → 17** | **74.33** | **87.19** | same as isic2016     |
 | **16 → 18** | **80.40** | **88.92** | same as isic2016     |
 
