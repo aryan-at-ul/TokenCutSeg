@@ -241,6 +241,8 @@ class DeepCutModule(nn.Module):
         
         return (loss_y + loss_x) / 2
 
+
+
     def forward(self, token_features: torch.Tensor, k: int = 8) -> tuple[torch.Tensor, torch.Tensor]:
         """
         Forward pass of the DeepCut module.
@@ -456,6 +458,19 @@ class VQGPTSegmentation(pl.LightningModule):
         masked_indices[mask] = self.mask_token_id
         return masked_indices.view(B, T), mask.view(B, T)
 
+    def dice_loss_fn(self, inputs: torch.Tensor, targets: torch.Tensor, eps: float = 1e-8) -> torch.Tensor:
+        num_classes = self.hparams.segmentation_config['num_classes']
+        targets_one_hot = F.one_hot(targets, num_classes=num_classes).permute(0, 3, 1, 2).float()
+        class_counts = targets_one_hot.sum(dim=(0, 2, 3)) + eps
+        total_pixels = targets_one_hot.shape[0] * targets_one_hot.shape[2] * targets_one_hot.shape[3]
+        class_weights = (total_pixels / (class_counts * num_classes)).clamp(0.5, 2.0)
+        intersection = (inputs * targets_one_hot).sum(dim=(2, 3))
+        total = inputs.sum(dim=(2, 3)) + targets_one_hot.sum(dim=(2, 3))
+        dice_scores = (2 * intersection + eps) / (total + eps)
+        weighted_dice_loss = (1 - dice_scores) * class_weights.unsqueeze(0)
+        return weighted_dice_loss.mean()
+
+
     def training_step(self, batch, batch_idx):
         images, masks = batch
         images = images.to(self.device)
@@ -502,9 +517,11 @@ class VQGPTSegmentation(pl.LightningModule):
         seg_logits = F.interpolate(S_all, size=images.shape[2:], mode='bilinear', align_corners=False)
         
         # Compute segmentation loss
-        seg_loss = F.cross_entropy(seg_logits, masks)
-        
-        # Combined loss
+        seg_ce = F.cross_entropy(seg_logits, masks)
+        sup_dice_loss = self.dice_loss_fn(seg_logits, masks)
+        # seg_loss = seg_ce + sup_dice_loss
+        seg_loss = 0.5 * seg_ce + sup_dice_loss
+
         total_loss = (
             self.gpt_loss_weight * lm_loss + 
             seg_loss + 
