@@ -10,7 +10,7 @@ class ResnetBlock(nn.Module):
         super().__init__()
         self.block = nn.Sequential(
             nn.GroupNorm(32, channels),
-            nn.SiLU(),  # Changed from ReLU to SiLU for better gradient flow
+            nn.SiLU(),  # relu removed
             nn.Conv2d(channels, channels, 3, 1, 1),
             nn.GroupNorm(32, channels),
             nn.SiLU(),
@@ -25,7 +25,7 @@ class Encoder(nn.Module):
         super().__init__()
         self.conv_in = nn.Conv2d(in_channels, hidden_channels, kernel_size=3, stride=1, padding=1)
         
-        # Downsampling blocks with residual connections
+
         channels = [hidden_channels, hidden_channels*2, hidden_channels*4]
         self.down = nn.ModuleList([
             nn.Sequential(
@@ -129,16 +129,16 @@ class VQGAN(nn.Module):
         if optimizer_idx is None:
             return dec, codebook_loss, indices
             
-        # Generator/Reconstruction loss
+ 
         if optimizer_idx == 0:
-            # Compute discriminator logits for generator training
+            
             if global_step >= self.loss.disc_start:
                 logits_fake = self.discriminator(dec)
                 g_loss = -torch.mean(logits_fake)
             else:
                 g_loss = torch.tensor(0.0, device=x.device)
                 
-            # Compute total loss and logging dict
+            
             loss, log_dict = self.loss(
                 codebook_loss=codebook_loss,
                 inputs=x,
@@ -162,7 +162,7 @@ class VQGAN(nn.Module):
             # WGAN-GP style discriminator loss
             d_loss = torch.mean(F.softplus(-logits_real)) + torch.mean(F.softplus(logits_fake))
             
-            # Compute total loss and logging dict
+           
             loss, log_dict = self.loss(
                 codebook_loss=codebook_loss,
                 inputs=x,
