@@ -102,4 +102,4 @@ python test_seg.py \
 To replicate our **TokenCutSeg** results, simply leave all arguments at their default values and download the provided checkpoints (table above).
 
 
-Ablation study checkpoints can be found here [savedmodels](https://drive.google.com/drive/folders/11_9iTLvHM3vQkgAyU871yUZ1fHzhh-Aw?usp=drive_link) //任务清单
+Ablation study checkpoints can be found here [savedmodels](https://drive.google.com/drive/folders/11_9iTLvHM3vQkgAyU871yUZ1fHzhh-Aw?usp=drive_link)
