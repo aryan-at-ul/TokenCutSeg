@@ -26,6 +26,10 @@ Use the `train_vq.py` script to train VQGAN on a large corpus of images. Below i
 
 ```
 python train_vq.py \
+    --train-data-dir /path/to/train/images \
+    --train-mask-dir /path/to/train/masks \
+    --val-data-dir /path/to/val/images \
+    --val-mask-dir /path/to/val/masks \ #val and train are the same (todo) lowest req loss can be saved
     --batch-size 4 \
     --num-workers 4 \
     --learning-rate 1e-4 \
