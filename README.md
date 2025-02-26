@@ -20,7 +20,6 @@ Dowload base vqgan (codebook size: 1024) [Download](https://drive.google.com/fil
 | **16 → 18** | **80.40** | **88.92** | same as isic2016     |
 
 
-
 ## Step 1: Train the VQGAN Model
 
 Use the `train_vq.py` script to train VQGAN on a large corpus of images. Below is the list of default arguments included in the script:
@@ -101,3 +100,6 @@ python test_seg.py \
 ```
 
 To replicate our **TokenCutSeg** results, simply leave all arguments at their default values and download the provided checkpoints (table above).
+
+
+Ablation study checkpoints can be found here [savedmodels](https://drive.google.com/drive/folders/11_9iTLvHM3vQkgAyU871yUZ1fHzhh-Aw?usp=drive_link) //任务清单
