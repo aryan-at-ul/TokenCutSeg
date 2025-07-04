@@ -12,7 +12,7 @@ import matplotlib.patches as mpatches
 def parse_args():
     parser = argparse.ArgumentParser(description="Run all TokenCutSeg validation experiments")
     
-    # Model checkpoints
+    # change these to download checkpoints
     parser.add_argument('--vqgan-checkpoint', type=str, default="vqgan_pretrain_512/checkpoints/vqgan_pretrain_isic_512-epoch=20-val_loss_vq=0.0000.ckpt",
                         help='Path to pretrained VQGAN checkpoint')
     parser.add_argument('--segmentation-checkpoint', type=str, default="segmentation_training_2018/checkpoints/segmentation_isic2018-epoch=20-val_iou=0.0000.ckpt",
@@ -23,13 +23,13 @@ def parse_args():
     parser.add_argument('--test-data-dir', type=str, default='/media/annatar/OLDHDD/isic2016/test')
     parser.add_argument('--test-mask-dir', type=str, default='/media/annatar/OLDHDD/isic2016/test_masks')
     
-    # Experiment settings - SMALL FOR QUICK TESTING
+    # chanhe these
     parser.add_argument('--batch-size', type=int, default=2)
     parser.add_argument('--num-workers', type=int, default=2)
     parser.add_argument('--image-size', type=int, default=224)
     parser.add_argument('--max-batches', type=int, default=5,
                         help='Max batches for feature quality and graph experiments')
-    parser.add_argument('--max-epochs', type=int, default=1,
+    parser.add_argument('--max-epochs', type=int, default=100,
                         help='Max epochs for annotation efficiency experiment')
     
     return parser.parse_args()
@@ -52,13 +52,13 @@ def create_feature_quality_plot(feature_results):
     
     bars = plt.bar(methods, values, color=colors, alpha=0.8, edgecolor='black', linewidth=1.5)
     
-    # Add value labels on bars
+
     for bar, val in zip(bars, values):
         height = bar.get_height()
         plt.text(bar.get_x() + bar.get_width()/2., height + 0.01,
                 f'{val:.3f}', ha='center', va='bottom', fontsize=12, fontweight='bold')
     
-    # Add improvement percentages
+
     baseline = values[0]
     vqgan_improvement = (values[1] - baseline) / baseline * 100
     transformer_improvement = (values[2] - baseline) / baseline * 100
@@ -89,7 +89,6 @@ def create_annotation_efficiency_plot(annotation_results):
     fractions = sorted(annotation_results.keys())
     performance = [annotation_results[f] for f in fractions]
     
-    # Convert to relative performance if we have 100% baseline
     if 1.0 in annotation_results and annotation_results[1.0] > 0:
         full_perf = annotation_results[1.0]
         relative_perf = [(p / full_perf) * 100 for p in performance]
@@ -101,7 +100,6 @@ def create_annotation_efficiency_plot(annotation_results):
     bars = plt.bar(x_labels, relative_perf, color='#2E86AB', alpha=0.8, 
                    edgecolor='black', linewidth=1.5)
     
-    # Add value labels
     for bar, val in zip(bars, relative_perf):
         height = bar.get_height()
         plt.text(bar.get_x() + bar.get_width()/2., height + 1,
@@ -132,7 +130,6 @@ def create_progressive_enhancement_plot(feature_results):
     plt.plot(x_pos, values, 'o-', linewidth=4, markersize=12, color='#2E86AB')
     plt.fill_between(x_pos, values, alpha=0.3, color='#2E86AB')
     
-    # Add value annotations
     for i, (step, val) in enumerate(zip(steps, values)):
         plt.annotate(f'{val:.3f}', (i, val), xytext=(0, 15), 
                     textcoords='offset points', ha='center',
@@ -150,11 +147,9 @@ def create_progressive_enhancement_plot(feature_results):
     plt.close()
 
 def create_pipeline_diagram():
-    """Create clean pipeline diagram"""
     fig, ax = plt.subplots(figsize=(15, 4))
     ax.axis('off')
     
-    # Pipeline steps with actual experimental context
     boxes = [
         ('Unlabeled\nDermoscopic\nImages', 0.1, '#95A5A6'),
         ('VQGAN\nEncoder', 0.25, '#F39C12'),
@@ -168,16 +163,16 @@ def create_pipeline_diagram():
     box_width = 0.12
     
     for i, (text, x_pos, color) in enumerate(boxes):
-        # Draw box
+       
         rect = plt.Rectangle((x_pos - box_width/2, 0.2), box_width, box_height, 
                            facecolor=color, alpha=0.7, edgecolor='black', linewidth=2)
         ax.add_patch(rect)
         
-        # Add text
+      
         ax.text(x_pos, 0.5, text, ha='center', va='center', 
                fontsize=11, fontweight='bold')
         
-        # Add arrow to next box
+
         if i < len(boxes) - 1:
             next_x = boxes[i+1][1]
             ax.annotate('', xy=(next_x - box_width/2, 0.5), 
@@ -194,7 +189,6 @@ def create_pipeline_diagram():
     plt.close()
 
 def create_all_clean_plots(feature_results, annotation_results):
-    """Create all plots separately with only real data"""
     
     print("Creating clean, separate plots with only actual experimental data...")
     
@@ -216,7 +210,6 @@ def create_all_clean_plots(feature_results, annotation_results):
     
     print("\nAll plots saved as separate PDF and PNG files:")
     print("- feature_quality_comparison.pdf/.png")
-    print("- annotation_efficiency.pdf/.png (if data available)")
     print("- progressive_enhancement.pdf/.png")
     print("- pipeline_diagram.pdf/.png")
 
@@ -230,7 +223,7 @@ def main():
     print("TokenCutSeg Validation Experiments (Quick Test)")
     print("=" * 60)
     
-    # Verify checkpoint paths exist
+   
     if not os.path.exists(args.vqgan_checkpoint):
         print(f"Error: VQGAN checkpoint not found: {args.vqgan_checkpoint}")
         return
@@ -246,15 +239,15 @@ def main():
     
     all_results = {}
     
-    # Experiment 1: Feature Quality Analysis
+
     print("\n" + "=" * 60)
     print("EXPERIMENT 1: FEATURE QUALITY ANALYSIS")
     print("=" * 60)
     
-    # Import and run experiment 1
+   
     sys.path.append('.')
     
-    # Run feature quality experiment
+   
     from experiment_1_feature_quality import FeatureQualityExperiment
     from src.utils.data_loading import create_dataloaders
     
@@ -274,7 +267,7 @@ def main():
     
     print("✓ Feature quality analysis completed")
     
-    # Experiment 2: Annotation Efficiency Analysis (REAL EXPERIMENT WITH SMALL DATASET)
+
     print("\n" + "=" * 60)
     print("EXPERIMENT 2: ANNOTATION EFFICIENCY ANALYSIS")
     print("=" * 60)
@@ -297,20 +290,12 @@ def main():
     
     print("✓ Annotation efficiency analysis completed")
     
-    # Save all results
+
     torch.save(all_results, 'all_experiment_results.pt')
     
-    # ================================
-    # CREATE AWESOME ABLATION PLOTS
-    # ================================
-    print("\n" + "=" * 60)
-    print("GENERATING PUBLICATION-READY ABLATION PLOTS")
-    print("=" * 60)
-    
-    # create_awesome_ablation_plots(feature_results, annotation_results)
+
     create_all_clean_plots(feature_results, annotation_results)
-    
-    # Print summary
+
     print("\n" + "=" * 60)
     print("EXPERIMENT SUMMARY")
     print("=" * 60)
@@ -344,9 +329,6 @@ def main():
     print("- tokencutseg_comprehensive_ablation.pdf")
     print("- tokencutseg_comprehensive_ablation.png")
     
-    print("\n🚀 ABLATION STUDY COMPLETE! Publication-ready plots generated.")
-    print("Note: This was a quick test run with limited data.")
-    print("For full publication results, increase max_batches and max_epochs.")
 
 if __name__ == "__main__":
     main()

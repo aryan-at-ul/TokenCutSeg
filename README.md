@@ -1,7 +1,22 @@
-# Codebook Tokens and Deep Graph Cuts for Skin Lesion Segmentation
+# TokenCutSeg: Label-Efficient Segmentation by Powering Supervised Refinement with Self-Learned Visual Vocabularies
 
 ## Abstract
-Accurate and robust skin lesion segmentation is crucial for early melanoma diagnosis and improved patient outcomes. However, current deep learning methods struggle with the inherent complexity of lesion boundaries, high inter-patient variability, and limited expert annotations. This paper introduces **TokenCutSeg**, a novel token-based skin lesion segmentation framework designed for precise boundary delineation. TokenCutSeg leverages a Vector Quantized Generative Adversarial Network (VQGAN) to map complex medical images into a compact token space, enabling efficient processing. A transformer network, trained with a self-supervised masked token prediction objective, learns rich contextual representations and effectively infers missing boundary information. Crucially, we introduce a dedicated module that refines segmentation masks using a supervised deep graph cut optimization strategy, directly addressing boundary irregularities. Evaluated on the ISIC 2016, ISIC 2017, and ISIC 2018 datasets, TokenCutSeg achieves state-of-the-art performance, demonstrating superior boundary accuracy and outperforming existing methods.
+Accurate skin lesion segmentation is crucial for early melanoma diagnosis, yet deep learning
+models are often hindered by two key challenges: the scarcity of expert-annotated data and the difficulty
+of precisely delineating complex lesion boundaries. Existing methods either require extensive annotated
+data or, in the case of graph-based refinement techniques, suffer from a feature representation bottleneck,
+where performance is limited by the quality of initial, often supervised, features. This paper introduces
+**TokenCutSeg**, a novel hybrid framework designed to overcome these limitations by strategically separating
+representation learning from supervised refinement. Our approach first leverages all available images, both
+labeled and unlabeled, in a self-supervised stage. A Vector Quantized Generative Adversarial Network
+(VQGAN) learns a rich, discrete visual vocabulary, tokenizing images into a compact and meaningful
+representation. Subsequently, a Transformer, trained with a masked token prediction task, models the deep
+contextual relationships between these visual tokens. This self-supervised pipeline produces powerful,
+context-aware features. Finally, these high-quality features are fed into a lightweight, supervised graph-based
+module that performs the final segmentation refinement, effectively solving the traditional feature bottleneck.
+Evaluated on the ISIC 2016, 2017, and 2018 datasets, TokenCutSeg achieves state-of-the-art performance,
+demonstrating superior boundary accuracy and generalization. Our results validate that this label-efficient,
+hybrid approach leads to more robust and practical segmentation models.
 
 
 
